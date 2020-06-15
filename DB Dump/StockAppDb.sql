@@ -1,6 +1,6 @@
 -- MySQL dump 10.13  Distrib 5.7.30, for Linux (x86_64)
 --
--- Host: localhost    Database: StockAppDb
+-- Host: localhost    Database: StockApp_Bettan
 -- ------------------------------------------------------
 -- Server version	5.7.30-0ubuntu0.18.04.1
 
@@ -53,6 +53,8 @@ CREATE TABLE `CompanyStock` (
   `Shares` int(11) NOT NULL,
   `SharePrice` decimal(15,2) DEFAULT NULL,
   `CompanyId` int(11) NOT NULL,
+  `ShareId` int(11) NOT NULL,
+  PRIMARY KEY (`ShareId`),
   KEY `CompanyId` (`CompanyId`),
   CONSTRAINT `CompanyStock_ibfk_1` FOREIGN KEY (`CompanyId`) REFERENCES `Companies` (`CompanyId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -143,6 +145,33 @@ LOCK TABLES `UserAddress` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `UserShares`
+--
+
+DROP TABLE IF EXISTS `UserShares`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `UserShares` (
+  `UserId` int(11) NOT NULL,
+  `ShareId` int(11) NOT NULL,
+  `Count` int(11) DEFAULT NULL,
+  PRIMARY KEY (`UserId`,`ShareId`),
+  KEY `ShareId` (`ShareId`),
+  CONSTRAINT `UserShares_ibfk_1` FOREIGN KEY (`UserId`) REFERENCES `Users` (`UserId`),
+  CONSTRAINT `UserShares_ibfk_2` FOREIGN KEY (`ShareId`) REFERENCES `CompanyStock` (`ShareId`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `UserShares`
+--
+
+LOCK TABLES `UserShares` WRITE;
+/*!40000 ALTER TABLE `UserShares` DISABLE KEYS */;
+/*!40000 ALTER TABLE `UserShares` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `Users`
 --
 
@@ -160,12 +189,18 @@ CREATE TABLE `Users` (
   `PasswordSalt` varchar(4000) NOT NULL,
   `ImgUrl` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`UserId`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Dumping data for table `Users`
 --
+
+LOCK TABLES `Users` WRITE;
+/*!40000 ALTER TABLE `Users` DISABLE KEYS */;
+/*!40000 ALTER TABLE `Users` ENABLE KEYS */;
+UNLOCK TABLES;
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
@@ -175,4 +210,4 @@ CREATE TABLE `Users` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-06-15 13:04:25
+-- Dump completed on 2020-06-15 19:23:48

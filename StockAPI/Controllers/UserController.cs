@@ -10,6 +10,7 @@ using Newtonsoft.Json;
 using StockAPI.Models;
 using StockAPI.Util;
 using System.Security.Policy;
+using System.Data.Entity.Validation;
 
 namespace StockAPI.Controllers
 {
@@ -54,8 +55,8 @@ namespace StockAPI.Controllers
 
         [HttpPost]
         [Route("SignIn")]
-        [Consumes("application/x-www-form-urlencoded")]
-        public async Task<bool> SignIn([FromForm] Users user)
+        //[Consumes("application/x-www-form-urlencoded")]
+        public async Task<int> SignIn([FromForm] Users user)
         {
             PasswordHasher hasher = new PasswordHasher();
             string submittedEmail = user.Email;
@@ -65,10 +66,13 @@ namespace StockAPI.Controllers
             
             if (dbUser == null)
             {
-                return false;
+                return 0;
             }
-            return hasher.VerifyHash(submittedPassword, dbUser.PasswordSalt, dbUser.Password);
+            if(hasher.VerifyHash(submittedPassword, dbUser.PasswordSalt, dbUser.Password))
+            {
+                return dbUser.UserId;
+            }
+            return -1;
         }
-
     }
 }
