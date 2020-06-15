@@ -20,6 +20,7 @@ namespace StockAPI.Models
         public virtual DbSet<Industry> Industry { get; set; }
         public virtual DbSet<Organizations> Organizations { get; set; }
         public virtual DbSet<UserAddress> UserAddress { get; set; }
+        public virtual DbSet<UserShares> UserShares { get; set; }
         public virtual DbSet<Users> Users { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -57,10 +58,13 @@ namespace StockAPI.Models
 
             modelBuilder.Entity<CompanyStock>(entity =>
             {
-                entity.HasNoKey();
+                entity.HasKey(e => e.ShareId)
+                    .HasName("PRIMARY");
 
                 entity.HasIndex(e => e.CompanyId)
                     .HasName("CompanyId");
+
+                entity.Property(e => e.ShareId).HasColumnType("int(11)");
 
                 entity.Property(e => e.CompanyId).HasColumnType("int(11)");
 
@@ -69,7 +73,7 @@ namespace StockAPI.Models
                 entity.Property(e => e.Shares).HasColumnType("int(11)");
 
                 entity.HasOne(d => d.Company)
-                    .WithMany()
+                    .WithMany(p => p.CompanyStock)
                     .HasForeignKey(d => d.CompanyId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("CompanyStock_ibfk_1");
@@ -134,6 +138,33 @@ namespace StockAPI.Models
                     .HasForeignKey(d => d.UserId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("UserAddress_ibfk_1");
+            });
+
+            modelBuilder.Entity<UserShares>(entity =>
+            {
+                entity.HasKey(e => new { e.UserId, e.ShareId })
+                    .HasName("PRIMARY");
+
+                entity.HasIndex(e => e.ShareId)
+                    .HasName("ShareId");
+
+                entity.Property(e => e.UserId).HasColumnType("int(11)");
+
+                entity.Property(e => e.ShareId).HasColumnType("int(11)");
+
+                entity.Property(e => e.Count).HasColumnType("int(11)");
+
+                entity.HasOne(d => d.Share)
+                    .WithMany(p => p.UserShares)
+                    .HasForeignKey(d => d.ShareId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("UserShares_ibfk_2");
+
+                entity.HasOne(d => d.User)
+                    .WithMany(p => p.UserShares)
+                    .HasForeignKey(d => d.UserId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("UserShares_ibfk_1");
             });
 
             modelBuilder.Entity<Users>(entity =>

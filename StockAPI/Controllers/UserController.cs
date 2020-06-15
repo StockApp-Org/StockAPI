@@ -34,7 +34,8 @@ namespace StockAPI.Controllers
         [HttpGet("{id}")]
         public async Task<Users> Get(int id)
         {
-            return await _context.Users.FirstOrDefaultAsync(u => u.UserId == id);
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.UserId == id);
+            return user;
         }
 
         [HttpPost]
@@ -55,7 +56,6 @@ namespace StockAPI.Controllers
 
         [HttpPost]
         [Route("SignIn")]
-        //[Consumes("application/x-www-form-urlencoded")]
         public async Task<int> SignIn([FromForm] Users user)
         {
             PasswordHasher hasher = new PasswordHasher();
