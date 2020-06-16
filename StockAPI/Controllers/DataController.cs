@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using StockAPI.Models;
+using StockAPI.Models.Views;
 
 namespace StockAPI.Controllers
 {
@@ -20,10 +21,26 @@ namespace StockAPI.Controllers
             _context = context;
         }
 
-        [HttpGet("{userId}")]
-        public async Task<List<UserShares>> GetUserShares(int userId)
+        [HttpGet]
+        [Route("User/{userId}")]
+        public async Task<List<UserShareView>> GetUserShares(int userId)
         {
-            return await _context.UserShares.Where(u => u.UserId == userId).ToListAsync();
+            return await _context.UserShareView.Where(u => u.UserId == userId).ToListAsync();
         }
+
+        [HttpGet]
+        [Route("Company/{companyId}")]
+        public async Task<CompanyShareView> GetCompanyShares(int companyId)
+        {
+            return await _context.CompanyShareView.FirstOrDefaultAsync(c => c.CompanyId == companyId);
+        }
+
+        [HttpGet]
+        [Route("Industry/{industryId}")]
+        public async Task<List<CompanyShareView>> GetIndustryShares(int industryId)
+        {
+            return await _context.CompanyShareView.Where(i => i.IndustryId == industryId).ToListAsync();
+        }
+
     }
 }
