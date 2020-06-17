@@ -56,7 +56,7 @@ namespace StockAPI.Controllers
 
         [HttpPost]
         [Route("SignIn")]
-        public async Task<int> SignIn([FromForm] Users user)
+        public async Task<Users> SignIn([FromForm] Users user)
         {
             PasswordHasher hasher = new PasswordHasher();
             string submittedEmail = user.Email;
@@ -66,13 +66,13 @@ namespace StockAPI.Controllers
             
             if (dbUser == null)
             {
-                return 0;
+                return null;
             }
             if(hasher.VerifyHash(submittedPassword, dbUser.PasswordSalt, dbUser.Password))
             {
-                return dbUser.UserId;
+                return dbUser;
             }
-            return -1;
+            return null;
         }
     }
 }
