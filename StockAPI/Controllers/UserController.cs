@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json.Linq;
+using Microsoft.AspNetCore.Mvc.NewtonsoftJson;
 using Newtonsoft.Json;
 using StockAPI.Models;
 using StockAPI.Util;
@@ -23,6 +23,10 @@ namespace StockAPI.Controllers
         public UserController(StockAppDbContext context)
         {
             _context = context;
+            _context.Users
+                .Include(user => user.UserAddress)
+                .Include(user => user.UserShares)
+                .ToList();
         }
 
         [HttpGet]

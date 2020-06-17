@@ -29,6 +29,7 @@ namespace StockAPI
         {
             services.AddControllers();
             services.AddDbContext<StockAppDbContext>(options => options.UseMySQL(Configuration.GetConnectionString("Database")));
+            services.AddControllersWithViews().AddNewtonsoftJson(options => options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
