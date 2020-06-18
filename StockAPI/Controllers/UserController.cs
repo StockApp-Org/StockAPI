@@ -43,7 +43,6 @@ namespace StockAPI.Controllers
         }
 
         [HttpPost]
-        [Consumes("application/x-www-form-urlencoded")]
         public async Task<Users> Post([FromForm] Users user)
         {
             var newUser = user;

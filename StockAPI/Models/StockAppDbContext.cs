@@ -242,6 +242,11 @@ namespace StockAPI.Models
                     .HasColumnType("varchar(12)")
                     .HasCharSet("latin1")
                     .HasCollation("latin1_swedish_ci");
+
+                entity.Property(e => e.PhoneNumber)
+                    .HasColumnType("varchar(25)")
+                    .HasCharSet("latin1")
+                    .HasCollation("latin1_swedish_ci");
             });
 
             OnModelCreatingPartial(modelBuilder);

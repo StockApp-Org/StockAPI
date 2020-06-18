@@ -22,6 +22,7 @@ namespace StockAPI.Models
         public string Password { get; set; }
         public string PasswordSalt { get; set; }
         public string ImgUrl { get; set; }
+        public string PhoneNumber { get; set; }
 
         public virtual ICollection<UserAddress> UserAddress { get; set; }
         public virtual ICollection<UserShares> UserShares { get; set; }
