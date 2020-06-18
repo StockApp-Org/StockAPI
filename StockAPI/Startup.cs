@@ -41,7 +41,7 @@ namespace StockAPI
             }
 
             app.UseHttpsRedirection();
-            app.UseCors(options => options.AllowAnyOrigin());
+            app.UseCors(options => options.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
             app.UseRouting();
 
             app.UseAuthorization();

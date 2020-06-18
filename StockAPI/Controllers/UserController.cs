@@ -66,16 +66,62 @@ namespace StockAPI.Controllers
             string submittedPassword = user.Password;
 
             Users dbUser = await _context.Users.FirstOrDefaultAsync(u => u.Email == submittedEmail);
-            
+
             if (dbUser == null)
             {
                 return null;
             }
-            if(hasher.VerifyHash(submittedPassword, dbUser.PasswordSalt, dbUser.Password))
+            if (hasher.VerifyHash(submittedPassword, dbUser.PasswordSalt, dbUser.Password))
             {
                 return dbUser;
             }
             return null;
+        }
+
+        [HttpPatch]
+        public async Task<Users> Update([FromForm] Users user)
+        {
+
+            var updatedUser = await _context.Users.FirstOrDefaultAsync(u => u.UserId == user.UserId);
+
+            if (updatedUser != null)
+            {
+                updatedUser.FirstName = user.FirstName;
+                updatedUser.LastName = user.LastName;
+                updatedUser.PersonNr = user.PersonNr;
+                updatedUser.PhoneNumber = user.PhoneNumber;
+                updatedUser.Email = user.Email;
+                await _context.SaveChangesAsync();
+                return updatedUser;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        [HttpPatch]
+        [Route("address")]
+        public async Task<UserAddress> UpdateAddress([FromForm] UserAddress user)
+        {
+
+            var updatedUser = await _context.UserAddress.FirstOrDefaultAsync(u => u.UserId == user.UserId);
+
+            if (updatedUser != null) // Update address
+            {
+                updatedUser.AddressRow1 = user.AddressRow1;
+                updatedUser.City = user.City;
+                updatedUser.ZipCode = user.ZipCode;
+                await _context.SaveChangesAsync();
+                return updatedUser;
+            }
+            else // If no address then create new address record.
+            {
+
+                _context.Update(user);
+                await _context.SaveChangesAsync();
+                return null;
+            }
         }
     }
 }
