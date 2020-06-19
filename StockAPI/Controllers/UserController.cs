@@ -123,5 +123,25 @@ namespace StockAPI.Controllers
                 return null;
             }
         }
+
+        [HttpPatch]
+        [Route("changePassword")]
+        public async Task<Users> ChangePassword([FromForm] Users user)
+        {
+            PasswordHasher hasher = new PasswordHasher();
+
+            var dbUser = await _context.Users.FirstOrDefaultAsync(u => u.UserId == user.UserId);
+
+            if (dbUser == null)
+            {
+                return null;
+            }
+            dbUser.PasswordSalt = hasher.RandomSalt;
+            dbUser.Password = hasher.GenerateSaltedHash(user.Password);
+
+            await _context.SaveChangesAsync();
+
+            return user;
+        }
     }
 }
