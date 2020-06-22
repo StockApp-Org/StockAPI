@@ -28,7 +28,16 @@ namespace StockAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddCors();
+            services.AddCors(options =>
+            {
+                options.AddPolicy(name: "DefaultPolicy",
+                    builder =>
+                    {
+                        builder.AllowAnyOrigin()
+                        .AllowAnyHeader()
+                        .AllowAnyMethod();
+                    });
+            });
             services.AddControllers();
             services.AddDbContext<StockAppDbContext>(options => options.UseMySQL(Configuration.GetSection("ConnectionStrings")["Database"]));
             services.AddControllersWithViews().AddNewtonsoftJson(options => options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
@@ -41,7 +50,7 @@ namespace StockAPI
             {
                 app.UseDeveloperExceptionPage();
             }
-            //app.UseCors(options => options.SetIsOriginAllowed(x => _ = true).AllowAnyMethod().AllowAnyHeader().AllowAnyOrigin());
+            app.UseCors("DefaultPolicy");
             app.UseRouting();
 
             app.UseAuthorization();
