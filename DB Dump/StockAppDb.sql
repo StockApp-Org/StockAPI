@@ -1,6 +1,6 @@
 -- MySQL dump 10.13  Distrib 8.0.20, for Win64 (x86_64)
 --
--- Host: 192.168.0.101    Database: StockApp_Bettan
+-- Host: 192.168.0.101    Database: StockAppDb
 -- ------------------------------------------------------
 -- Server version	5.7.30-0ubuntu0.18.04.1
 
@@ -61,11 +61,11 @@ CREATE TABLE `CompanyStock` (
   `Shares` int(11) NOT NULL,
   `SharePrice` decimal(15,2) DEFAULT NULL,
   `CompanyId` int(11) NOT NULL,
-  `ShareId` int(11) NOT NULL,
+  `ShareId` int(11) NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (`ShareId`),
   KEY `CompanyId` (`CompanyId`),
   CONSTRAINT `CompanyStock_ibfk_1` FOREIGN KEY (`CompanyId`) REFERENCES `Companies` (`CompanyId`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -114,7 +114,7 @@ CREATE TABLE `UserAddress` (
   PRIMARY KEY (`AddressId`),
   KEY `UserId` (`UserId`),
   CONSTRAINT `UserAddress_ibfk_1` FOREIGN KEY (`UserId`) REFERENCES `Users` (`UserId`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=69 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -131,7 +131,8 @@ SET @saved_cs_client     = @@character_set_client;
  1 AS `CompanyName`,
  1 AS `IndustryName`,
  1 AS `ShareCount`,
- 1 AS `NetWorth`*/;
+ 1 AS `NetWorth`,
+ 1 AS `SharePercent`*/;
 SET character_set_client = @saved_cs_client;
 
 --
@@ -144,7 +145,7 @@ DROP TABLE IF EXISTS `UserShares`;
 CREATE TABLE `UserShares` (
   `UserId` int(11) NOT NULL,
   `ShareId` int(11) NOT NULL,
-  `Count` int(11) DEFAULT NULL,
+  `Count` int(11) NOT NULL,
   PRIMARY KEY (`UserId`,`ShareId`),
   KEY `ShareId` (`ShareId`),
   CONSTRAINT `UserShares_ibfk_1` FOREIGN KEY (`UserId`) REFERENCES `Users` (`UserId`),
@@ -163,8 +164,7 @@ DELIMITER ;;
 /*!50003 CREATE*/ /*!50017 DEFINER=`root`@`%`*/ /*!50003 TRIGGER TR_AddUserShare
 AFTER INSERT ON UserShares
 FOR EACH ROW
-UPDATE CompanyStock
-SET Shares = (Shares - NEW.Count)
+UPDATE CompanyStock SET Shares = (Shares - NEW.Count)
 WHERE ShareId = NEW.ShareId */;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -235,15 +235,15 @@ CREATE TABLE `Users` (
   `ImgUrl` varchar(255) DEFAULT NULL,
   `PhoneNumber` varchar(25) DEFAULT NULL,
   PRIMARY KEY (`UserId`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping events for database 'StockApp_Bettan'
+-- Dumping events for database 'StockAppDb'
 --
 
 --
--- Dumping routines for database 'StockApp_Bettan'
+-- Dumping routines for database 'StockAppDb'
 --
 
 --
@@ -259,7 +259,7 @@ CREATE TABLE `Users` (
 /*!50001 SET collation_connection      = utf8mb4_general_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
 /*!50013 DEFINER=`root`@`%` SQL SECURITY DEFINER */
-/*!50001 VIEW `CompanyShareView` AS (select `c`.`CompanyId` AS `CompanyId`,`i`.`IndustryId` AS `IndustryId`,`c`.`Name` AS `CompanyName`,`i`.`Name` AS `IndustryName`,`cs`.`Shares` AS `AvailableShares`,`cs`.`SharePrice` AS `SharePrice`,(`cs`.`SharePrice` * `cs`.`Shares`) AS `NetWorth` from ((`StockAppDb`.`Companies` `c` join `StockAppDb`.`Industry` `i` on((`c`.`IndustryId` = `i`.`IndustryId`))) join `StockAppDb`.`CompanyStock` `cs` on((`c`.`CompanyId` = `cs`.`CompanyId`)))) */;
+/*!50001 VIEW `CompanyShareView` AS (select `c`.`CompanyId` AS `CompanyId`,`i`.`IndustryId` AS `IndustryId`,`c`.`Name` AS `CompanyName`,`i`.`Name` AS `IndustryName`,`cs`.`Shares` AS `AvailableShares`,`cs`.`SharePrice` AS `SharePrice`,(`cs`.`SharePrice` * `cs`.`Shares`) AS `NetWorth` from ((`Companies` `c` join `Industry` `i` on((`c`.`IndustryId` = `i`.`IndustryId`))) join `CompanyStock` `cs` on((`c`.`CompanyId` = `cs`.`CompanyId`)))) */;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
 /*!50001 SET collation_connection      = @saved_col_connection */;
@@ -277,7 +277,7 @@ CREATE TABLE `Users` (
 /*!50001 SET collation_connection      = utf8mb4_general_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
 /*!50013 DEFINER=`root`@`%` SQL SECURITY DEFINER */
-/*!50001 VIEW `UserShareView` AS (select `u`.`UserId` AS `UserId`,concat(`u`.`FirstName`,' ',`u`.`LastName`) AS `FullName`,`c`.`Name` AS `CompanyName`,`i`.`Name` AS `IndustryName`,`us`.`Count` AS `ShareCount`,(`cs`.`SharePrice` * `us`.`Count`) AS `NetWorth` from ((((`StockAppDb`.`Users` `u` join `StockAppDb`.`UserShares` `us` on((`u`.`UserId` = `us`.`UserId`))) join `StockAppDb`.`CompanyStock` `cs` on((`us`.`ShareId` = `cs`.`ShareId`))) join `StockAppDb`.`Companies` `c` on((`cs`.`CompanyId` = `c`.`CompanyId`))) join `StockAppDb`.`Industry` `i` on((`c`.`IndustryId` = `i`.`IndustryId`)))) */;
+/*!50001 VIEW `UserShareView` AS (select `u`.`UserId` AS `UserId`,concat(`u`.`FirstName`,' ',`u`.`LastName`) AS `FullName`,`c`.`Name` AS `CompanyName`,`i`.`Name` AS `IndustryName`,`us`.`Count` AS `ShareCount`,(`cs`.`SharePrice` * `us`.`Count`) AS `NetWorth`,((`us`.`Count` / `cs`.`Shares`) * 100) AS `SharePercent` from ((((`Users` `u` join `UserShares` `us` on((`u`.`UserId` = `us`.`UserId`))) join `CompanyStock` `cs` on((`us`.`ShareId` = `cs`.`ShareId`))) join `Companies` `c` on((`cs`.`CompanyId` = `c`.`CompanyId`))) join `Industry` `i` on((`c`.`IndustryId` = `i`.`IndustryId`)))) */;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
 /*!50001 SET collation_connection      = @saved_col_connection */;
@@ -291,4 +291,4 @@ CREATE TABLE `Users` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-06-18 12:24:01
+-- Dump completed on 2020-06-24 10:18:18

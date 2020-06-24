@@ -13,5 +13,6 @@ namespace StockAPI.Models.Views
         public string IndustryName { get; set; }
         public int ShareCount { get; set; }
         public decimal NetWorth { get; set; }
+        public decimal SharePercent { get; set; }
     }
 }
