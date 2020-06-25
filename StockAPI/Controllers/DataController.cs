@@ -42,5 +42,38 @@ namespace StockAPI.Controllers
             return await _context.CompanyShareView.Where(i => i.IndustryId == industryId).ToListAsync();
         }
 
+        [HttpGet]
+        [Route("Shares")]
+        public async Task<List<CompanyShareView>> GetAvailableShares()
+        {
+            return await _context.CompanyShareView.ToListAsync();
+        }
+
+        [HttpPut]
+        [Route("Buy")]
+        public async Task<UserShareView> BuyShare(int shareId, int userId, int amount)
+        {
+            UserShares existingRecord = await _context.UserShares.FirstOrDefaultAsync(s => s.ShareId == shareId && s.UserId == userId);
+
+            if (existingRecord != null)
+            {
+                existingRecord.Count += amount;
+            }
+            else
+            {
+                UserShares newRecord = new UserShares
+                {
+                    UserId = userId,
+                    ShareId = shareId,
+                    Count = amount
+                };
+
+                _context.UserShares.Add(newRecord);
+            }
+            await _context.SaveChangesAsync();
+
+            return await _context.UserShareView.FirstOrDefaultAsync(s => s.ShareId == shareId && s.UserId == userId);
+        }
+
     }
 }

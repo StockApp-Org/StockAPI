@@ -117,7 +117,6 @@ namespace StockAPI.Controllers
             }
             else // If no address then create new address record.
             {
-
                 _context.Update(user);
                 await _context.SaveChangesAsync();
                 return null;

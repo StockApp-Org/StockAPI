@@ -33,6 +33,7 @@ namespace StockAPI.Models
             {
                 entity.HasNoKey();
                 entity.ToView("CompanyShareView");
+                entity.Property(si => si.ShareId).HasColumnName("ShareId");
                 entity.Property(c => c.CompanyId).HasColumnName("CompanyId");
                 entity.Property(i => i.IndustryId).HasColumnName("IndustryId");
             });
@@ -42,6 +43,7 @@ namespace StockAPI.Models
                 entity.HasNoKey();
                 entity.ToView("UserShareView");
                 entity.Property(u => u.UserId).HasColumnName("UserId");
+                entity.Property(s => s.ShareId).HasColumnName("ShareId");
             });
 
             modelBuilder.Entity<Companies>(entity =>

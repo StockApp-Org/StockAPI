@@ -7,6 +7,7 @@ namespace StockAPI.Models.Views
 {
     public class CompanyShareView
     {
+        public int ShareId { get; set; }
         public int CompanyId { get; set; }
         public int IndustryId { get; set; }
         public string CompanyName { get; set; }
