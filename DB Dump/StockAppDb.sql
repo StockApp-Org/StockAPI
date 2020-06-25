@@ -29,7 +29,7 @@ CREATE TABLE `Companies` (
   PRIMARY KEY (`CompanyId`),
   KEY `IndustryId` (`IndustryId`),
   CONSTRAINT `Companies_ibfk_1` FOREIGN KEY (`IndustryId`) REFERENCES `Industry` (`IndustryId`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -41,6 +41,7 @@ DROP TABLE IF EXISTS `CompanyShareView`;
 SET @saved_cs_client     = @@character_set_client;
 /*!50503 SET character_set_client = utf8mb4 */;
 /*!50001 CREATE VIEW `CompanyShareView` AS SELECT 
+ 1 AS `ShareId`,
  1 AS `CompanyId`,
  1 AS `IndustryId`,
  1 AS `CompanyName`,
@@ -65,7 +66,7 @@ CREATE TABLE `CompanyStock` (
   PRIMARY KEY (`ShareId`),
   KEY `CompanyId` (`CompanyId`),
   CONSTRAINT `CompanyStock_ibfk_1` FOREIGN KEY (`CompanyId`) REFERENCES `Companies` (`CompanyId`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -79,7 +80,7 @@ CREATE TABLE `Industry` (
   `IndustryId` int(11) NOT NULL AUTO_INCREMENT,
   `Name` varchar(100) NOT NULL,
   PRIMARY KEY (`IndustryId`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -126,6 +127,7 @@ DROP TABLE IF EXISTS `UserShareView`;
 SET @saved_cs_client     = @@character_set_client;
 /*!50503 SET character_set_client = utf8mb4 */;
 /*!50001 CREATE VIEW `UserShareView` AS SELECT 
+ 1 AS `ShareId`,
  1 AS `UserId`,
  1 AS `FullName`,
  1 AS `CompanyName`,
@@ -259,7 +261,7 @@ CREATE TABLE `Users` (
 /*!50001 SET collation_connection      = utf8mb4_general_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
 /*!50013 DEFINER=`root`@`%` SQL SECURITY DEFINER */
-/*!50001 VIEW `CompanyShareView` AS (select `c`.`CompanyId` AS `CompanyId`,`i`.`IndustryId` AS `IndustryId`,`c`.`Name` AS `CompanyName`,`i`.`Name` AS `IndustryName`,`cs`.`Shares` AS `AvailableShares`,`cs`.`SharePrice` AS `SharePrice`,(`cs`.`SharePrice` * `cs`.`Shares`) AS `NetWorth` from ((`Companies` `c` join `Industry` `i` on((`c`.`IndustryId` = `i`.`IndustryId`))) join `CompanyStock` `cs` on((`c`.`CompanyId` = `cs`.`CompanyId`)))) */;
+/*!50001 VIEW `CompanyShareView` AS (select `cs`.`ShareId` AS `ShareId`,`c`.`CompanyId` AS `CompanyId`,`i`.`IndustryId` AS `IndustryId`,`c`.`Name` AS `CompanyName`,`i`.`Name` AS `IndustryName`,`cs`.`Shares` AS `AvailableShares`,`cs`.`SharePrice` AS `SharePrice`,(`cs`.`SharePrice` * `cs`.`Shares`) AS `NetWorth` from ((`Companies` `c` join `Industry` `i` on((`c`.`IndustryId` = `i`.`IndustryId`))) join `CompanyStock` `cs` on((`c`.`CompanyId` = `cs`.`CompanyId`)))) */;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
 /*!50001 SET collation_connection      = @saved_col_connection */;
@@ -277,7 +279,7 @@ CREATE TABLE `Users` (
 /*!50001 SET collation_connection      = utf8mb4_general_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
 /*!50013 DEFINER=`root`@`%` SQL SECURITY DEFINER */
-/*!50001 VIEW `UserShareView` AS (select `u`.`UserId` AS `UserId`,concat(`u`.`FirstName`,' ',`u`.`LastName`) AS `FullName`,`c`.`Name` AS `CompanyName`,`i`.`Name` AS `IndustryName`,`us`.`Count` AS `ShareCount`,(`cs`.`SharePrice` * `us`.`Count`) AS `NetWorth`,((`us`.`Count` / `cs`.`Shares`) * 100) AS `SharePercent` from ((((`Users` `u` join `UserShares` `us` on((`u`.`UserId` = `us`.`UserId`))) join `CompanyStock` `cs` on((`us`.`ShareId` = `cs`.`ShareId`))) join `Companies` `c` on((`cs`.`CompanyId` = `c`.`CompanyId`))) join `Industry` `i` on((`c`.`IndustryId` = `i`.`IndustryId`)))) */;
+/*!50001 VIEW `UserShareView` AS (select `us`.`ShareId` AS `ShareId`,`u`.`UserId` AS `UserId`,concat(`u`.`FirstName`,' ',`u`.`LastName`) AS `FullName`,`c`.`Name` AS `CompanyName`,`i`.`Name` AS `IndustryName`,`us`.`Count` AS `ShareCount`,cast((`cs`.`SharePrice` * `us`.`Count`) as decimal(15,2)) AS `NetWorth`,((`us`.`Count` / `cs`.`Shares`) * 100) AS `SharePercent` from ((((`Users` `u` join `UserShares` `us` on((`u`.`UserId` = `us`.`UserId`))) join `CompanyStock` `cs` on((`us`.`ShareId` = `cs`.`ShareId`))) join `Companies` `c` on((`cs`.`CompanyId` = `c`.`CompanyId`))) join `Industry` `i` on((`c`.`IndustryId` = `i`.`IndustryId`)))) */;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
 /*!50001 SET collation_connection      = @saved_col_connection */;
@@ -291,4 +293,4 @@ CREATE TABLE `Users` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-06-24 10:18:18
+-- Dump completed on 2020-06-25 11:37:36
