@@ -11,6 +11,7 @@ using StockAPI.Models;
 using StockAPI.Util;
 using System.Security.Policy;
 using System.Data.Entity.Validation;
+using System.IO;
 
 namespace StockAPI.Controllers
 {
@@ -40,6 +41,23 @@ namespace StockAPI.Controllers
         {
             var user = await _context.Users.FirstOrDefaultAsync(u => u.UserId == id);
             return user;
+        }
+
+        [HttpGet("Download/{id}")]
+        [Produces("application/octet-stream")]
+        public async Task<FileContentResult> DownloadData(int id)
+        {
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.UserId == id);
+            byte[] bytes = System.Text.Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(user, new JsonSerializerSettings()
+            {
+                PreserveReferencesHandling = PreserveReferencesHandling.Objects,
+                Formatting = Formatting.Indented
+            }
+                ));
+            var output = new FileContentResult(bytes, "application/octet-stream");
+            output.FileDownloadName = user.FirstName + user.LastName + ".json";
+
+            return output;
         }
 
         [HttpPost]
@@ -106,7 +124,6 @@ namespace StockAPI.Controllers
         {
 
             var updatedUser = await _context.UserAddress.FirstOrDefaultAsync(u => u.UserId == user.UserId);
-
             if (updatedUser != null) // Update address
             {
                 updatedUser.AddressRow1 = user.AddressRow1;
