@@ -159,5 +159,48 @@ namespace StockAPI.Controllers
 
             return user;
         }
+
+        [HttpDelete]
+        [Route("delete")]
+        public async Task<Users> Delete([FromForm] Users user)
+        {
+            var userAddressId = -1;
+
+
+
+
+            int.TryParse(user.PasswordSalt, out userAddressId);
+
+            PasswordHasher hasher = new PasswordHasher();
+
+            var dbUser = await _context.Users.FirstOrDefaultAsync(u => u.UserId == user.UserId);
+
+
+            var dbUserAddress = await _context.UserAddress.FirstOrDefaultAsync(u => u.UserId == userAddressId);
+
+            string submittedPassword = user.Password;
+            if (dbUser == null)
+            {
+                return null;
+            }
+
+            if (hasher.VerifyHash(submittedPassword, dbUser.PasswordSalt, dbUser.Password))
+            {
+                if (dbUserAddress != null)
+                {
+                    _context.UserAddress.Remove(dbUserAddress);
+                }
+                _context.Users.Remove(dbUser);
+            }
+
+            else
+            {
+                return null;
+            }
+
+            await _context.SaveChangesAsync();
+
+            return user;
+        }
     }
 }

@@ -34,7 +34,7 @@ namespace StockAPI
                 .UseContentRoot(GetRootPath())
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
-                    webBuilder.UseUrls("http://192.168.0.203:5050");
+                    webBuilder.UseUrls("http://localhost:5001");
                     webBuilder.UseStartup<Startup>();
                 });
     }
