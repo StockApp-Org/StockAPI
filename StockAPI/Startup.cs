@@ -13,6 +13,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using StockAPI.Models;
+using Microsoft.AspNetCore.HttpOverrides;
 
 namespace StockAPI
 {
@@ -28,16 +29,7 @@ namespace StockAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddCors(options =>
-            {
-                options.AddPolicy(name: "DefaultPolicy",
-                    builder =>
-                    {
-                        builder.AllowAnyOrigin()
-                        .AllowAnyHeader()
-                        .AllowAnyMethod();
-                    });
-            });
+            
             services.AddControllers().AddNewtonsoftJson(options => options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
             services.AddDbContext<StockAppDbContext>(options => options.UseMySQL(Configuration.GetSection("ConnectionStrings")["Database"]));
         }
@@ -49,7 +41,13 @@ namespace StockAPI
             {
                 app.UseDeveloperExceptionPage();
             }
-            app.UseCors("DefaultPolicy");
+
+            app.UseForwardedHeaders(new ForwardedHeadersOptions
+            {
+                ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+            });
+            app.UseAuthentication();
+
             app.UseRouting();
 
             app.UseAuthorization();
