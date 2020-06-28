@@ -145,15 +145,25 @@ namespace StockAPI.Controllers
         public async Task<Users> ChangePassword([FromForm] Users user)
         {
             PasswordHasher hasher = new PasswordHasher();
-
+            var submittedPassword = user.Password;
+            var newPassword = user.PasswordSalt;
             var dbUser = await _context.Users.FirstOrDefaultAsync(u => u.UserId == user.UserId);
 
             if (dbUser == null)
             {
                 return null;
             }
-            dbUser.PasswordSalt = hasher.RandomSalt;
-            dbUser.Password = hasher.GenerateSaltedHash(user.Password);
+
+
+            if (hasher.VerifyHash(submittedPassword, dbUser.PasswordSalt, dbUser.Password))
+            {
+                dbUser.PasswordSalt = hasher.RandomSalt;
+                dbUser.Password = hasher.GenerateSaltedHash(newPassword);
+            }
+            else
+            {
+                return null;
+            }
 
             await _context.SaveChangesAsync();
 
