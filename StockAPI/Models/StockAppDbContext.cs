@@ -162,7 +162,7 @@ namespace StockAPI.Models
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.UserAddress)
                     .HasForeignKey(d => d.UserId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("UserAddress_ibfk_1");
             });
 
@@ -183,13 +183,13 @@ namespace StockAPI.Models
                 entity.HasOne(d => d.Share)
                     .WithMany(p => p.UserShares)
                     .HasForeignKey(d => d.ShareId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .OnDelete(DeleteBehavior.NoAction)
                     .HasConstraintName("UserShares_ibfk_2");
 
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.UserShares)
                     .HasForeignKey(d => d.UserId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("UserShares_ibfk_1");
             });
 

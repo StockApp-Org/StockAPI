@@ -114,8 +114,8 @@ CREATE TABLE `UserAddress` (
   `AddressId` int(11) NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (`AddressId`),
   KEY `UserId` (`UserId`),
-  CONSTRAINT `UserAddress_ibfk_1` FOREIGN KEY (`UserId`) REFERENCES `Users` (`UserId`)
-) ENGINE=InnoDB AUTO_INCREMENT=69 DEFAULT CHARSET=latin1;
+  CONSTRAINT `UserAddress_ibfk_1` FOREIGN KEY (`UserId`) REFERENCES `Users` (`UserId`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=74 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -150,8 +150,8 @@ CREATE TABLE `UserShares` (
   `Count` int(11) NOT NULL,
   PRIMARY KEY (`UserId`,`ShareId`),
   KEY `ShareId` (`ShareId`),
-  CONSTRAINT `UserShares_ibfk_1` FOREIGN KEY (`UserId`) REFERENCES `Users` (`UserId`),
-  CONSTRAINT `UserShares_ibfk_2` FOREIGN KEY (`ShareId`) REFERENCES `CompanyStock` (`ShareId`)
+  CONSTRAINT `UserShares_ibfk_1` FOREIGN KEY (`UserId`) REFERENCES `Users` (`UserId`) ON DELETE CASCADE,
+  CONSTRAINT `UserShares_ibfk_2` FOREIGN KEY (`ShareId`) REFERENCES `CompanyStock` (`ShareId`) ON DELETE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
@@ -237,7 +237,7 @@ CREATE TABLE `Users` (
   `ImgUrl` varchar(255) DEFAULT NULL,
   `PhoneNumber` varchar(25) DEFAULT NULL,
   PRIMARY KEY (`UserId`)
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=39 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -293,4 +293,4 @@ CREATE TABLE `Users` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-06-25 11:37:36
+-- Dump completed on 2020-06-28 16:05:53
